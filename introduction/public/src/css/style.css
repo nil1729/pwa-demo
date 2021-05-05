@@ -1,0 +1,99 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	font-family: Arial, sans-serif;
+}
+
+.title {
+	text-align: center;
+	padding: 30px 0;
+	background-color: #ccc;
+	opacity: 0;
+}
+
+.title h1 {
+	color: rgb(54, 8, 8);
+}
+
+.app-feature,
+.start-over {
+	text-align: center;
+	margin: 5px auto;
+	width: 90%;
+	max-width: 550px;
+}
+
+.app-feature .feature {
+	padding: 20px 0;
+	margin: 10px 0;
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.616);
+	opacity: 0;
+}
+
+.app-feature .feature p {
+	font-size: 1.1em;
+	text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.438);
+}
+
+#installable {
+	background-color: rgba(145, 230, 75, 0.719);
+}
+
+#offline {
+	background-color: rgba(52, 148, 212, 0.726);
+}
+
+#responsive {
+	background-color: rgba(221, 112, 112, 0.753);
+}
+
+#push {
+	background-color: rgba(221, 168, 125, 0.671);
+}
+
+#notifications {
+	background-color: rgba(233, 132, 225, 0.774);
+}
+
+#native-feature {
+	background-color: rgba(169, 116, 230, 0.863);
+}
+
+#more {
+	background-color: rgba(60, 207, 170, 0.521);
+}
+
+.start-over button {
+	outline: none;
+	cursor: pointer;
+	box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.616);
+	background-color: rgb(226, 101, 55);
+	border: none;
+	font-weight: 700;
+	padding: 5px 10px;
+	color: #fff;
+	opacity: 0;
+}
+.start-over button:hover {
+	background-color: rgba(226, 101, 55, 0.876);
+}
+
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-in {
+	animation: fade-in linear 800ms;
+}
