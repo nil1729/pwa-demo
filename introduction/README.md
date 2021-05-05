@@ -33,3 +33,33 @@
 | Native Apps          | Access Device features, Leverage OS  | Top popular apps win, Rest Loses |
 | Traditional Web Apps | Highly limited Device Feature access | High Reach, No Borders           |
 | Progressive Web Apps | Access Device features, Leverage OS  | High Reach, No Borders           |
+
+### PWA - Core Building Blocks
+
+- Service Worker
+  - Caching for Offline Support
+  - Enable other PWA features
+- Background Sync (Sync user data in the Background)
+- Web Push (Mobile-like Push Notifications)
+- Application Manifest (Allows addition to Home Screen)
+- Responsive Design (App/Layout should work and looks good across devices)
+- GeoLocation API (Access user location)
+- Media API (Access Device Camera and Microphone)
+
+### PWAs and SPAs (Single Page Applications) [Wrong Comparison]
+
+| SPA                                | PWA                                              |
+| ---------------------------------- | ------------------------------------------------ |
+| Powered by Javascript              | Uses a lot of Javascript (but works without it!) |
+| Highly Reactive (to User Input)    | Aims to have high reactivity                     |
+| Only one HTML File sent to Browser | Works with multiple files                        |
+
+**SPA can become great PWAs but we can turn any other web page/ app into a PWA!**
+
+### Progressive Enhancement
+
+| Starting Point                                                                     | Near Future                                 | Future                    |
+| ---------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------- |
+| Existing (legacy) App (Old Technology may be needs to support (very) old browsers) | Add some features                           | Use multiple PWA features |
+| Existing "modern" App (Modern Technology, only needs to support modern Browsers)   | Implement some core PWA features            | Completely Convert to PWA |
+| Upcoming Project                                                                   | Fully implement as PWA right from the start | Complete PWA              |
