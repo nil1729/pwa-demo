@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>PWA | App Manifest</title>
+		<link
+			rel="stylesheet"
+			href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+			type="text/css"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css" />
+		<link rel="stylesheet" href="/src/css/app.css" type="text/css" />
+		<link rel="stylesheet" href="/src/css/main.css" type="text/css" />
+	</head>
+	<body>
+		<!-- Nav bar -->
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+					<!-- Title -->
+					<span class="mdl-layout-title">PWA-Gateway</span>
+					<!-- Add spacer, to align navigation to the right -->
+					<div class="mdl-layout-spacer"></div>
+					<!-- Navigation. We hide it in small screens. -->
+					<nav class="mdl-navigation mdl-layout--large-screen-only">
+						<a class="mdl-navigation__link" href="/">Feed</a>
+						<a class="mdl-navigation__link" href="/help">Help</a>
+						<div class="mdl-navigation__link">
+							<button
+								class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+							>
+								Enable Notifications
+							</button>
+						</div>
+					</nav>
+				</div>
+			</header>
+			<div class="mdl-layout__drawer">
+				<span class="mdl-layout-title">PWA-Gateway</span>
+				<nav class="mdl-navigation">
+					<a class="mdl-navigation__link" href="/">Feed</a>
+					<a class="mdl-navigation__link" href="/help">Help</a>
+					<button
+						class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+					>
+						Enable Notifications
+					</button>
+				</nav>
+			</div>
+			<main class="mdl-layout__content">
+				<div class="page-content">
+					<!-- Background Pic -->
+					<div class="bg__pic"></div>
+					<h4 class="text-center display-1">Share your Moments</h4>
+				</div>
+				<dialog class="mdl-dialog post-dialog">
+					<div class="mdl-dialog__content">
+						<div class="photo-container"></div>
+						<div class="text-center">
+							<button
+								class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect"
+							>
+								<span class="material-icons"> photo_camera </span> capture
+							</button>
+						</div>
+						<form id="new-post-form">
+							<div
+								class="textfield-container mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+							>
+								<input class="mdl-textfield__input" type="text" name="title" id="post_title" />
+								<label class="mdl-textfield__label" for="post_title">Title</label>
+							</div>
+							<div
+								class="textfield-container mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+							>
+								<input
+									class="mdl-textfield__input"
+									type="text"
+									name="location"
+									id="post_location"
+								/>
+								<label class="mdl-textfield__label" for="post_location">Location</label>
+							</div>
+							<div class="text-center">
+								<button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+									<span class="material-icons"> location_on </span> get location
+								</button>
+							</div>
+							<div class="text-center submit-btn-container">
+								<button
+									type="submit"
+									class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+								>
+									add post
+								</button>
+							</div>
+						</form>
+					</div>
+					<div class="mdl-dialog__actions">
+						<div class="text-center close-btn-container">
+							<button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect close">
+								<span class="material-icons"> close </span>
+							</button>
+						</div>
+					</div>
+				</dialog>
+			</main>
+			<div class="fab__btn__container">
+				<button
+					class="show-modal mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+				>
+					<i class="material-icons">add</i>
+				</button>
+			</div>
+		</div>
+
+		<script src="/src/js/material.min.js" defer></script>
+		<script src="/src/js/app.js"></script>
+		<script src="/src/js/feed.js"></script>
+	</body>
+</html>

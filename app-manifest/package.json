@@ -1,0 +1,19 @@
+{
+	"name": "pwa-app-manifest",
+	"version": "1.2.0",
+	"description": "Understanding the manifest.json file stucture and it's importance",
+	"main": "index.js",
+	"scripts": {
+		"start": "http-server -c-1 -p 8000"
+	},
+	"keywords": [
+		"pwa",
+		"manifest",
+		"web-app"
+	],
+	"author": "Nilanjan Deb",
+	"license": "MIT",
+	"devDependencies": {
+		"http-server": "^0.12.3"
+	}
+}
