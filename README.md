@@ -1,4 +1,4 @@
-### Web App Manifest
+## Web App Manifest
 
 - Make our App installable
 - It is a **JSON file** that contains some information about our Web App (**manifest.json**)
