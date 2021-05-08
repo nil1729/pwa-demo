@@ -23,14 +23,21 @@
 
 ### Criteria for Showing `Install Banner` by Chrome
 
-1. Has a **web manifest** file with:
+- The web app is not already installed
+- Has a **web manifest** file with:
 
-   - a `short_name` (used on the home screen)
-   - a `name` (used on the banner)
-   - a `144x144 png` icon (the icon declarations must include a mime type of `image/png`)
-   - a `start_url` that loads
+  - a `short_name` (used on the home screen)
+  - a `name` (used on the banner)
+  - a `144x144 png` icon (the icon declarations must include a mime type of `image/png`)
+  - a `start_url` that loads
+  - `display` - must be one of **fullscreen**, **standalone**, or **minimal-ui**
+  - `prefer_related_applications` must not be present, or be false
 
-2. Has a **Service Worker** registered on the Site.
-3. Is served over **HTTPS** (a requirement for using Service Worker).
-4. Is visited at least twice, with at least five minutes between visits. (For Older Chrome Versions)  
-   (Modern Versions show the banner instantly if all criteria mentioned earlier is fulfilled)
+- Has a **Service Worker** registered on the Site.
+- Is served over **HTTPS** (a requirement for using Service Worker).
+- Meets a user engagement heuristic
+
+---
+
+- **Other Browsers criteria for showing the install banner is almost same. See criteria [here](https://web.dev/install-criteria/)**
+- **Changing the default installation behavior of Add to Home Screen Banner. Docs [here](https://developers.google.com/web/updates/2018/06/a2hs-updates)**
