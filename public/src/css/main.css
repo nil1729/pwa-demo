@@ -31,6 +31,24 @@
 .post-dialog .submit-btn-container {
 	margin: 3rem 4rem;
 }
+
+.demo-card-wide.mdl-card {
+	width: 512px;
+	margin: 10px auto 15px;
+}
+.demo-card-wide > .mdl-card__title {
+	color: #fff;
+	height: 176px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.demo-card-wide > .mdl-card__title h2.mdl-card__title-text {
+	font-weight: 400;
+}
+.demo-card-wide > .mdl-card__supporting-text {
+	font-size: 16px;
+}
 @media screen and (max-width: 600px) {
 	.bg__pic {
 		height: 25vh;
@@ -41,7 +59,7 @@
 	}
 	.mdl-layout__content .page-content h4.display-1 {
 		font-size: 18px;
-		margin: 5px 0;
+		margin: 5px 0 10px;
 	}
 	.post-dialog .textfield-container.mdl-textfield {
 		width: 100%;
@@ -52,5 +70,9 @@
 	}
 	.post-dialog .submit-btn-container {
 		margin: 2rem 3rem;
+	}
+	.demo-card-wide.mdl-card {
+		width: 90%;
+		margin: 5px auto 13px;
 	}
 }

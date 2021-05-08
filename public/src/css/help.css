@@ -1,0 +1,19 @@
+.mdl-layout__content .page-content .help-container {
+	padding: 5px 10px 5px 15px;
+}
+.mdl-layout__content .page-content .help-container .contact-details h3 {
+	margin-top: 35px;
+}
+
+.mdl-layout__content .page-content .help-container .contact-details .contact-btn-container button {
+	margin: 0 10px;
+}
+
+.mdl-layout__content
+	.page-content
+	.help-container
+	.contact-details
+	.contact-btn-container
+	button:first-of-type {
+	margin-left: 0;
+}
