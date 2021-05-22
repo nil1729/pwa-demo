@@ -1,43 +1,68 @@
-## Service Workers
+## Promise and Fetch API
 
-- Doing work behind the scenes
-- Service Worker Browser Support. See here on [isServiceWorkerReady?](https://jakearchibald.github.io/isserviceworkerready/)
+> Javascript is Non Blocking Single Threaded Language
 
-### What are Service Workers?
+- ```
+   setTimeout(function () {
+       console.log('This will execute when the timer is done');  --- this will run after 5 seconds
+   }, 5000);
 
-![sw-1](./slides/1.jpeg)
+   console.log('This will execute right after the setTimeout()');  --- this will run immediately after the JS file loaded on the browser
 
-### "Listenable" Events (in Service Workers)
+  ```
 
-| Event                    | Source                                                                                 |
-| ------------------------ | -------------------------------------------------------------------------------------- |
-| Fetch                    | Browser or Page-related Javascript initiates a fetch (Http request)                    |
-| Push Notifications       | Service Workers receives Web Push Notifications (from Server)                          |
-| Notification Interaction | User interacts with displayed Notification                                             |
-| Background Sync          | Service Workers receives Background Sync Event (e.g. Internet Connection was restored) |
-| Service Worker Lifecycle | Service Worker phase changes                                                           |
+- ```
+    let promise = new Promise(function (resolve, reject) {
+        // Do some Task which take some time
+            resolve(<Resolve Message>) // when successfully task done;
+            reject(<Rejection Message>) // when some task fails;
+    });
 
-### Service Worker Lifecycle
+    promise
+        .then(function (response) {
+            // do some operation on response
+        })
+        .then(...) // `then` chain if we need some more promise to resolve
+        .then(...)
+        .then(...)
+        .catch(function (e) { // this catch error which may happens any the upper then block
+            // Handle the error
+        })
+        .finally(function () { // it will always run
+           // Do some task which independent of success or fails of the promise
+        });
+  ```
 
-![sw-2](./slides/2.jpeg)
+- ```
+   fetch(<URL>, {
+       method: '<Request Method>',
+       ...
+       mode: 'cors', // ['no-cors', 'same-origin'],
+       cache: 'default', // ['no-cache', 'reload', 'force-cache', 'only-if-cached']
+       headers: {
+           'Content-Type': 'application/json',
+           ...
+       },
+       body: JSON.stringify(<Data>), // When send a POST/PUT/DELETE request
+   })
+       .then(function (res) {
+           return res.json();
+       })
+       .then(function (data) {
+           // Do something with the fetched data
+       })
+       .catch(function (e) {
+           // Handle Error
+       })
+       .finally(function () {
+           // Do something which independent of the requested data but need to wait for finish fetch
+       });
 
-### Criteria for Showing `Install Banner` by Chrome
+  ```
 
-- The web app is not already installed
-- Has a **web manifest** file with:
+> **Regular AJAX requests or XHR, or any other third-party `fetch` alternatives cannot be listened to by Service Worker.**
 
-  - a `short_name` (used on the home screen)
-  - a `name` (used on the banner)
-  - a `144x144 png` icon (the icon declarations must include a mime type of `image/png`)
-  - a `start_url` that loads
-  - `display` - must be one of **fullscreen**, **standalone**, or **minimal-ui**
-  - `prefer_related_applications` must not be present, or be false
+### Helpful Links
 
-- Has a **Service Worker** registered on the Site.
-- Is served over **HTTPS** (a requirement for using Service Worker).
-- Meets a user engagement heuristic
-
----
-
-- **Other Browsers criteria for showing the install banner is almost same. See criteria [here](https://web.dev/install-criteria/)**
-- **Changing the default installation behavior of Add to Home Screen Banner. Docs [here](https://developers.google.com/web/updates/2018/06/a2hs-updates)**
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
