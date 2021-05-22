@@ -62,8 +62,6 @@
 
 > **Regular AJAX requests or XHR, or any other third-party `fetch` alternatives cannot be listened to by Service Worker.**
 
-> We need to add some polyfills to enable `fetch` and `promises` on our app to run well in some older Browsers also.
-
 ### Helpful Links
 
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
