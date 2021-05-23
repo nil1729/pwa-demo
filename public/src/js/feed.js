@@ -5,21 +5,6 @@ if (!dialog.showModal) {
 }
 showModalButton.addEventListener('click', function () {
 	dialog.showModal();
-	if (deferredPrompt) {
-		deferredPrompt.prompt();
-		// Wait for the user to respond to the prompt
-		deferredPrompt.userChoice.then((choice) => {
-			console.log('User Choice', choice);
-			if (choice.outcome === 'accepted') {
-				console.log('User accepted the A2HS prompt');
-			} else {
-				console.log('User dismissed the A2HS prompt');
-			}
-			// Clear the saved prompt since it can't be used again
-			deferredPrompt = null;
-			console.log('[deferredPrompt]', deferredPrompt);
-		});
-	}
 });
 
 dialog.querySelector('.close').addEventListener('click', function () {
@@ -46,8 +31,18 @@ function createCard(imgSrc, title, location) {
 	feedLocation.className = 'mdl-card__supporting-text text-center';
 	feedLocation.textContent = location;
 	feedCard.appendChild(feedLocation);
-
+	componentHandler.upgradeElement(feedCard);
 	feedContainer.appendChild(feedCard);
 }
 
-createCard('https://wallpapercave.com/wp/wp2646303.jpg', 'Nice Javascript', 'In India');
+fetch('https://jsonplaceholder.typicode.com/photos?_limit=5')
+	.then(function (response) {
+		return response.json();
+	})
+	.then(function (data) {
+		if (Array.isArray(data)) {
+			data.forEach(function (item) {
+				createCard(item.url, item.title, 'In India');
+			});
+		}
+	});
