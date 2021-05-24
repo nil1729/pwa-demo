@@ -246,7 +246,7 @@
     });
   ```
 
-### Some Usefull Methods
+### Some Useful Methods
 
 - Sometimes We may want to unregister our Service Worker from our Websites via Javascript
 
