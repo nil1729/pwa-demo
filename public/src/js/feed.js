@@ -7,6 +7,12 @@ if (!dialog.showModal) {
 }
 showModalButton.addEventListener('click', function () {
 	dialog.showModal();
+
+	// if (navigator.serviceWorker) {
+	// 	navigator.serviceWorker.getRegistrations().then(function (registrations) {
+	// 		for (let i in registrations) registrations[i].unregister();
+	// 	});
+	// }
 });
 dialog.querySelector('.close').addEventListener('click', function () {
 	dialog.close();

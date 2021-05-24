@@ -1,5 +1,5 @@
-const STATIC_CACHE_NAME = 'static-v10';
-const DYNAMIC_CACHE_NAME = 'dynamic-v10';
+const STATIC_CACHE_NAME = 'static-v1';
+const DYNAMIC_CACHE_NAME = 'dynamic-v1';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -21,6 +21,18 @@ function isInStaticFiles(requestURL, array = STATIC_FILES) {
 		else if (array[i] !== '/' && requestURL.indexOf(array[i]) > -1) return true;
 	}
 	return false;
+}
+
+function trimCache(cacheName, maxItems) {
+	caches.open(cacheName).then(function (cache) {
+		cache.keys().then(function (keyList) {
+			if (keyList.length > maxItems) {
+				cache.delete(keyList[0]).then(function () {
+					trimCache(cacheName, maxItems);
+				});
+			}
+		});
+	});
 }
 
 self.addEventListener('install', function (event) {
@@ -153,6 +165,7 @@ self.addEventListener('fetch', function (event) {
 			caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
 				return fetch(event.request).then(function (res) {
 					cache.put(event.request, res.clone());
+					// trimCache(DYNAMIC_CACHE_NAME, 5);
 					return res;
 				});
 			})
@@ -171,12 +184,13 @@ self.addEventListener('fetch', function (event) {
 							.then(function (res) {
 								return caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
 									cache.put(event.request.url, res.clone());
+									// trimCache(DYNAMIC_CACHE_NAME, 5);
 									return res;
 								});
 							})
 							// If network fails or the resource not cached yet
 							.catch(function (e) {
-								if (event.request.url.indexOf('/help') > -1) {
+								if (event.request.headers.get('accept').includes('text/html')) {
 									return caches.match('/offline.html');
 								}
 							})
