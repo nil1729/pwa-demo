@@ -25,7 +25,9 @@
   ```
 
 - By the above strategy only, We never get the up-to-date version of our static files (if do any changes) because Service Worker always return files from the Storage and not update the Cache Storage as well if we don't update the `serviceWorker.js` file. So we need to give some version name to our Static Cache Storage and whenever we update our static files we need to update the version name also.
+
   > Code for this Example
+
   ```
     self.addEventListener('activate', function (event) {
         event.waitUntil(
@@ -242,6 +244,42 @@
             );
         }
     });
+  ```
+
+### Some Usefull Methods
+
+- Sometimes We may want to unregister our Service Worker from our Websites via Javascript
+
+  > Code for this Example
+
+  ```
+    // Some condition when we want to delete the Service Worker
+    {
+        // Checking Browser supports the Service Worker
+        if (navigator.serviceWorker) {
+
+            // Do the unregistration stuffs
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let i in registrations) registrations[i].unregister();
+            });
+        }
+    }
+  ```
+
+- May be some cases we don't want to store too much data to the Browser Storage and want to delete storage after some limits
+  > Code for this Example
+  ```
+    function trimCache(cacheName, maxItems) {
+        caches.open(cacheName).then(function (cache) {
+            cache.keys().then(function (keyList) {
+                if (keyList.length > maxItems) {
+                    cache.delete(keyList[0]).then(function () {
+                        trimCache(cacheName, maxItems);
+                    });
+                }
+            });
+        });
+    }
   ```
 
 ### Helpful Links
