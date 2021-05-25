@@ -1,11 +1,9 @@
 ## IndexedDB
 
 - IndexedDB is a low-level API for client-side storage of significant amounts of structured data, including files/blobs. We don't want to store JSON data which are changing too much often. For that Cache Storage may be a good choice to store. But `IndexedDB` gives us some high-performance searches, operations for this data.
-- > Dynamic Caching and Caching Dynamic Content  
-  > ![slide-1](./slides/1.jpeg)
+- > ![slide-1](./slides/1.jpeg)
 
-- > IndexDB Introduction
-  > ![slide-2](./slides/2.jpeg)
+- > ![slide-2](./slides/2.jpeg)
 
 - We are going to use another third-party library which mostly mirros the `IndexedDB` API but with some improvements, which makes development too much easier.
   - > [IDB Pakage](https://github.com/jakearchibald/idb)
@@ -67,3 +65,49 @@
             });
     }
     ```
+
+### Using Above script in `serviceWorker.js` file
+
+- Importing the library module and utility script
+  - > Code for this Example
+    ```
+    importScripts('/src/js/idb.js');
+    importScripts('/src/js/utility.js');
+    .
+    .
+    .
+    ```
+- Using utility functions on `Cache, then Network Strategy`
+
+  - > Code for this Example
+
+    ```
+    self.addEventListener('fetch', function (event) {
+      // Some Shortlisted URL(s), we want to store up-to-date response to cache Storage
+
+      if (/* Condition that fullfil those shortlisted URL(s) */) {
+        event.respondWith(
+          fetch(event.request).then(function (res) {
+            const clonedResponse = res.clone();
+            clearStore(<- Store Name ->)
+              .then(function () {
+                return clonedResponse.json();
+              })
+              .then(function (data) {
+                for (let key in data) {
+                  writeData(<- Store Name ->, data[key]);
+                }
+              });
+            return res;
+          })
+        );
+      }
+      .
+      .
+      .
+    }
+    ```
+
+### Helpful Links
+
+- [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
