@@ -22,7 +22,7 @@ function clearCards() {
 	while (feedContainer.hasChildNodes()) feedContainer.removeChild(feedContainer.lastChild);
 }
 
-function createCard(id, imgSrc, title, location) {
+function createCard({ id, image, title, location }) {
 	const feedCard = document.createElement('div');
 	feedCard.className = 'demo-card-wide mdl-card mdl-shadow--2dp';
 	feedCard.id = id;
@@ -30,7 +30,7 @@ function createCard(id, imgSrc, title, location) {
 	// feed title
 	const feedTitle = document.createElement('div');
 	feedTitle.className = 'mdl-card__title';
-	feedTitle.style.backgroundImage = `url(${imgSrc})`;
+	feedTitle.style.backgroundImage = `url(${image})`;
 	const titleText = document.createElement('h2');
 	titleText.className = 'mdl-card__title-text';
 	titleText.textContent = title;
@@ -54,7 +54,12 @@ function createCard(id, imgSrc, title, location) {
 	feedContainer.appendChild(feedCard);
 }
 
-const URL = 'https://jsonplaceholder.typicode.com/photos?_limit=5';
+function updateUI(data) {
+	clearCards();
+	for (let i in data) createCard(data[i]);
+}
+
+const URL = 'https://pwa-demo-nil1729-default-rtdb.firebaseio.com/posts.json';
 let networkDataReceived = false;
 
 fetch(URL)
@@ -63,61 +68,14 @@ fetch(URL)
 		return response.json();
 	})
 	.then(function (data) {
-		if (Array.isArray(data)) {
-			networkDataReceived = true;
-			clearCards();
-			data.forEach(function (item) {
-				createCard(item.id, item.url, item.title, 'In India');
-			});
-		}
+		networkDataReceived = true;
+		updateUI(data);
 	})
 	.catch(function (err) {});
 
-if (window.caches) {
-	caches
-		.match(URL)
-		.then(function (response) {
-			console.log('From Cache', response);
-			if (response) return response.json();
-		})
-		.then(function (data) {
-			clearCards();
-			if (Array.isArray(data) && !networkDataReceived) {
-				data.forEach(function (item) {
-					createCard(item.id, item.url, item.title, 'In India');
-				});
-			}
-		});
+if (window.indexedDB) {
+	readData('feed-posts').then(function (data) {
+		console.log('From Cache', data);
+		if (!networkDataReceived) updateUI(data);
+	});
 }
-
-// fetch('https://jsonplaceholder.typicode.com/photos/10')
-// 	.then(function (response) {
-// 		return response.json();
-// 	})
-// 	.then(function (data) {
-// 		createCard(data.id, data.url, data.title, 'In India');
-// 	})
-// 	.catch(function (err) {
-// 		console.error(err);
-// 	});
-
-// Save for Offline Access on demand based on User choice
-// const saveForOfflineAccess = function (photoURL) {
-// 	return function () {
-// 		if (window.caches) {
-// 			caches
-// 				.open('user-requested')
-// 				.then(function (cache) {
-// 					return Promise.all([
-// 						cache.add('https://jsonplaceholder.typicode.com/photos/10'),
-// 						fetch(photoURL, { mode: 'no-cors' }).then(function (res) {
-// 							cache.put(photoURL, res.clone());
-// 						}),
-// 					]);
-// 				})
-// 				.catch(function (err) {
-// 					console.error(err);
-// 				});
-// 		}
-// 	};
-// };

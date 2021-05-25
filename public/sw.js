@@ -1,5 +1,8 @@
-const STATIC_CACHE_NAME = 'static-v1';
-const DYNAMIC_CACHE_NAME = 'dynamic-v1';
+importScripts('/src/js/idb.js');
+importScripts('/src/js/utility.js');
+
+const STATIC_CACHE_NAME = 'static-v3';
+const DYNAMIC_CACHE_NAME = 'dynamic-v3';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -8,6 +11,10 @@ const STATIC_FILES = [
 	'/src/css/main.css',
 	'/src/js/app.js',
 	'/src/js/feed.js',
+	'/src/js/promise.js',
+	'/src/js/fetch.js',
+	'/src/js/idb.js',
+	'/src/js/utility.js',
 	'/src/js/material.min.js',
 	'/src/images/main-bg.jpg',
 	'https://code.getmdl.io/1.3.0/material.indigo-pink.min.css',
@@ -21,18 +28,6 @@ function isInStaticFiles(requestURL, array = STATIC_FILES) {
 		else if (array[i] !== '/' && requestURL.indexOf(array[i]) > -1) return true;
 	}
 	return false;
-}
-
-function trimCache(cacheName, maxItems) {
-	caches.open(cacheName).then(function (cache) {
-		cache.keys().then(function (keyList) {
-			if (keyList.length > maxItems) {
-				cache.delete(keyList[0]).then(function () {
-					trimCache(cacheName, maxItems);
-				});
-			}
-		});
-	});
 }
 
 self.addEventListener('install', function (event) {
@@ -71,103 +66,23 @@ self.addEventListener('activate', function (event) {
 	);
 });
 
-/**
- *
- *
- * @Strategy Cache with Networks Fallback
- *
- */
-// self.addEventListener('fetch', function (event) {
-// 	event.respondWith(
-// 		// First trying to find the resource from cache
-// 		caches.match(event.request).then(function (response) {
-// 			if (response) return response;
-// 			// If not in cache try to load the resource from network
-// 			else {
-// 				return (
-// 					fetch(event.request)
-// 						.then(function (res) {
-// 							return caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
-// 								cache.put(event.request.url, res.clone());
-// 								return res;
-// 							});
-// 						})
-
-// 						// If network fails or the resource not cached yet
-// 						.catch(function (e) {
-// 							return caches.match('/offline.html');
-// 						})
-// 				);
-// 			}
-// 		})
-// 	);
-// });
-
-/**
- *
- *
- * @Strategy Cache Only
- *
- *
- */
-// self.addEventListener('fetch', function (event) {
-// 	event.respondWith(caches.match(event.request));
-// });
-
-/**
- *
- *
- * @Strategy Network Only
- *
- *
- */
-// self.addEventListener('fetch', function (event) {
-// 	event.respondWith(fetch(event.request));
-// });
-
-/**
- *
- *
- * @Strategy  Network with Cache Fallback
- *
- *
- */
-// self.addEventListener('fetch', function (event) {
-// 	event.respondWith(
-// 		fetch(event.request)
-// 			.then(function (res) {
-// 				return caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
-// 					cache.put(event.request, res.clone());
-// 					return res;
-// 				});
-// 			})
-// 			.catch(function (err) {
-// 				return caches.match(event.request).then(function (response) {
-// 					if (response) return response;
-// 					else return caches.match('/offline.html');
-// 				});
-// 			})
-// 	);
-// });
-
-/**
- *
- *
- * @Strategy Cache, then Network
- *
- *
- */
 self.addEventListener('fetch', function (event) {
-	const URL = 'https://jsonplaceholder.typicode.com/photos?_limit=5';
+	const URL = 'https://pwa-demo-nil1729-default-rtdb.firebaseio.com/posts';
 
 	if (event.request.url.indexOf(URL) > -1) {
 		event.respondWith(
-			caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
-				return fetch(event.request).then(function (res) {
-					cache.put(event.request, res.clone());
-					// trimCache(DYNAMIC_CACHE_NAME, 5);
-					return res;
-				});
+			fetch(event.request).then(function (res) {
+				const clonedResponse = res.clone();
+				clearStore('feed-posts')
+					.then(function () {
+						return clonedResponse.json();
+					})
+					.then(function (data) {
+						for (let key in data) {
+							writeData('feed-posts', data[key]);
+						}
+					});
+				return res;
 			})
 		);
 	} else if (isInStaticFiles(event.request.url)) {
