@@ -1,113 +1,81 @@
-## IndexedDB
+## Background Sync
 
-- IndexedDB is a low-level API for client-side storage of significant amounts of structured data, including files/blobs. We don't want to store JSON data which are changing too much often. For that Cache Storage may be a good choice to store. But `IndexedDB` gives us some high-performance searches, operations for this data.
+- Background sync is a new web API that lets you defer actions until the user has stable connectivity. This is useful for ensuring that whatever the user wants to send, is actually sent..
 - > ![slide-1](./slides/1.jpeg)
 
-- > ![slide-2](./slides/2.jpeg)
+- We are going to use Firebase Functions for sending and getting data from the Firebase Database.
 
-- We are going to use another third-party library which mostly mirros the `IndexedDB` API but with some improvements, which makes development too much easier.
-  - > [IDB Pakage](https://github.com/jakearchibald/idb)
-  - > Creating DB Instance
-    ```
-    const dbPromise = idb.openDB(<- Database Name ->, 1, {
-        upgrade(db) {
-            if (!db.objectStoreNames.contains(<-Store Name->)) {
-                db.createObjectStore(<-Store Name->, {
-                    keyPath: 'id',
-                });
-            }
-        },
-    });
-    ```
-  - > Writing Data
-    ```
-    function writeData(storeName, data) {
-        return dbPromise.then(function (db) {
-            const tx = db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            store.put(data);
-            return tx.done;
-        });
-    }
-    ```
-  - > Reading Data
-    ```
-    function readData(storeName) {
-        return dbPromise.then(function (db) {
-            const store = db.transaction(storeName, 'readonly').objectStore(storeName);
-            return store.getAll();
-        });
-    }
-    ```
-  - > Clearing Store Data
-    ```
-    function clearStore(storeName) {
-        return dbPromise.then(function (db) {
-            const tx = db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
-            store.clear();
-            return tx.done;
-        });
-    }
-    ```
-  - > Deleting Single Item From Store
-    ```
-    function clearItemFromStore(storeName, key) {
-        dbPromise
-            .then(function (db) {
-                const tx = db.transaction(storeName, 'readwrite');
-                const store = tx.objectStore(storeName);
-                store.delete(key);
-                return tx.done;
-            })
-            .then(function () {
-                console.log('Item Deleted!');
-            });
-    }
-    ```
-
-### Using Above script in `serviceWorker.js` file
-
-- Importing the library module and utility script
-  - > Code for this Example
-    ```
-    importScripts('/src/js/idb.js');
-    importScripts('/src/js/utility.js');
-    .
-    .
-    .
-    ```
-- Using utility functions on `Cache, then Network Strategy`
-
-  - > Code for this Example
+  - > Register a Sync Task
 
     ```
-    self.addEventListener('fetch', function (event) {
-      // Some Shortlisted URL(s), we want to store up-to-date response to cache Storage
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-      if (/* Condition that fullfil those shortlisted URL(s) */) {
-        event.respondWith(
-          fetch(event.request).then(function (res) {
-            const clonedResponse = res.clone();
-            clearStore(<- Store Name ->)
+        // Form submit handle
+
+        if (navigator.serviceWorker && window.SyncManager) {
+          navigator.serviceWorker.ready.then(function (sw) {
+            // Writing data to indexedDB so that we can send the request to server whenever connection reestablished
+            writeData('<- Store Name IndexedDB ->', <- New Post ->)
               .then(function () {
-                return clonedResponse.json();
+                return sw.sync.register('sync-new-post');
               })
-              .then(function (data) {
-                for (let key in data) {
-                  writeData(<- Store Name ->, data[key]);
-                }
+              .then(function () {
+                // Do some stuffs
+              })
+              .catch(function (e) {
+                // If anything gone wrong in this process try direct send data to server
               });
-            return res;
-          })
-        );
-      }
-      .
-      .
-      .
-    }
+          });
+        } else {
+          // Direct send data to server
+        };
+      });
+    ```
+
+  - > Listening to Sync Event
+
+    ```
+      self.addEventListener('sync', function (event) {
+        if (event.tag === <- Distinct Sync Tag Name ->) {
+          event.waitUntil(
+
+            // read data from the indexedDB which should be sent to the server
+            readData(<- Store Name IndexedDB ->).then(function (data) {
+                ...
+                ...
+                fetch(<- Server URL ->, {
+                  method: ['POST', 'DELETE', 'PUT'],
+                  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                  body: JSON.stringify(<- Data ->),
+                })
+                  .then(function (res) {
+
+                    // Do some checks to make sure data saved successfully
+                    if (res.ok) {
+                      return res.json();
+                    }
+                    throw new Error('Failed to Save!');
+                  })
+                  .then(function (data) {
+                    // Do some stuffs
+
+                    // Delete that data from indexedDB
+                    return clearItemFromStore(<- Store Name ->, <- Distinct Identifier for that data ->);
+                  })
+                  .catch(function (err) {
+                    console.log('Error! While sending data to the Server', err);
+                  });
+                ...
+                ...
+            })
+          );
+        }
+      });
     ```
 
 ### Helpful Links
 
-- [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+- [Background Sync Feature](https://developers.google.com/web/updates/2015/12/background-sync)
+- [Firebase Functions](https://firebase.google.com/products/functions)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)

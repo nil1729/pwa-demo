@@ -20,6 +20,14 @@ function clearCards() {
 	while (feedContainer.hasChildNodes()) feedContainer.removeChild(feedContainer.lastChild);
 }
 
+function clearInput() {
+	let inputs = document.querySelectorAll('input');
+	inputs.forEach(function (inputItem) {
+		inputItem.value = '';
+		inputItem.parentElement.classList.remove('is-dirty', 'is-focused');
+	});
+}
+
 function createCard({ id, image, title, location }) {
 	const feedCard = document.createElement('div');
 	feedCard.className = 'demo-card-wide mdl-card mdl-shadow--2dp';
@@ -50,10 +58,9 @@ function updateUI(data) {
 	for (let i in data) createCard(data[i]);
 }
 
-const URL = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net/getPosts';
 let networkDataReceived = false;
 
-fetch(URL)
+fetch(`${SERVER_DOMAIN}/getPosts`)
 	.then(function (response) {
 		console.log('From Networks', response);
 		return response.json();
@@ -76,7 +83,7 @@ function showNotifications(message) {
 }
 
 function sendData(data) {
-	fetch(URL, {
+	fetch(`${SERVER_DOMAIN}/savePost`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 		body: JSON.stringify(data),
@@ -109,6 +116,9 @@ form.addEventListener('submit', function (event) {
 			'https://firebasestorage.googleapis.com/v0/b/pwa-demo-nil1729.appspot.com/o/download.jpg?alt=media&token=439861b2-5a65-4a4b-adf3-346677c69a3c',
 	};
 
+	// Clear Input
+	clearInput();
+
 	if (navigator.serviceWorker && window.SyncManager) {
 		navigator.serviceWorker.ready.then(function (sw) {
 			writeData('sync-posts', newPost)
@@ -119,7 +129,7 @@ form.addEventListener('submit', function (event) {
 					showNotifications('Your post has been saved for syncing!');
 				})
 				.catch(function (e) {
-					console.log(e);
+					sendData(newPost);
 				});
 		});
 	} else sendData(newPost);

@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-const STATIC_CACHE_NAME = 'static-v2';
-const DYNAMIC_CACHE_NAME = 'dynamic-v2';
+const STATIC_CACHE_NAME = 'static-v1';
+const DYNAMIC_CACHE_NAME = 'dynamic-v1';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -67,10 +67,8 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-	const URL = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net/getPosts';
-
 	if (event.request.method === 'GET') {
-		if (event.request.url.indexOf(URL) > -1) {
+		if (event.request.url.indexOf(SERVER_DOMAIN) > -1) {
 			event.respondWith(
 				fetch(event.request).then(function (res) {
 					const clonedResponse = res.clone();
@@ -123,7 +121,7 @@ self.addEventListener('sync', function (event) {
 		event.waitUntil(
 			readData('sync-posts').then(function (data) {
 				for (let dt of data) {
-					fetch('https://us-central1-pwa-demo-nil1729.cloudfunctions.net/savePost', {
+					fetch(`${SERVER_DOMAIN}/savePost`, {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 						body: JSON.stringify(dt),

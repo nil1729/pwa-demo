@@ -1,3 +1,5 @@
+const SERVER_DOMAIN = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net';
+
 const dbPromise = idb.openDB('Posts', 1, {
 	upgrade(db) {
 		if (!db.objectStoreNames.contains('feed-posts')) {
