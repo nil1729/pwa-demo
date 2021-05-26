@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-const STATIC_CACHE_NAME = 'static-v1';
-const DYNAMIC_CACHE_NAME = 'dynamic-v1';
+const STATIC_CACHE_NAME = 'static-v2';
+const DYNAMIC_CACHE_NAME = 'dynamic-v2';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -143,4 +143,13 @@ self.addEventListener('sync', function (event) {
 			})
 		);
 	}
+});
+
+self.addEventListener('notificationclick', function (event) {
+	console.log('[Service Worker] Notification Clicked', event);
+	event.notification.close();
+});
+
+self.addEventListener('notificationclose', function (event) {
+	console.log('[Service Worker] Notification Closed', event);
 });

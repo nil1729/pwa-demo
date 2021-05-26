@@ -4,3 +4,6 @@
 .text-center {
 	text-align: center;
 }
+.enable-notifications {
+	display: none;
+}
