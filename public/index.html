@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>PWA | Service Worker - IndexedDB</title>
+		<title>PWA | Service Worker - Background Sync</title>
 		<link
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
@@ -80,13 +80,7 @@
 				</nav>
 			</div>
 			<main class="mdl-layout__content">
-				<div class="page-content">
-					<!-- Background Pic -->
-					<div class="bg__pic"></div>
-					<h4 class="text-center display-1">Share your Moments</h4>
-					<div class="feed-container"></div>
-				</div>
-				<dialog class="mdl-dialog post-dialog">
+				<div class="mdl-dialog post-dialog" id="post-modal">
 					<div class="mdl-dialog__content">
 						<div class="photo-container"></div>
 						<div class="text-center">
@@ -153,20 +147,30 @@
 							</button>
 						</div>
 					</div>
-				</dialog>
+				</div>
+				<div class="page-content">
+					<!-- Background Pic -->
+					<div class="bg__pic"></div>
+					<h4 class="text-center display-1">Share Your Moments</h4>
+					<div class="feed-container"></div>
+				</div>
+				<div class="fab__btn__container">
+					<button
+						class="
+							show-modal
+							mdl-button mdl-js-button
+							mdl-button--fab
+							mdl-js-ripple-effect
+							mdl-button--colored
+						"
+					>
+						<i class="material-icons">add</i>
+					</button>
+				</div>
 			</main>
-			<div class="fab__btn__container">
-				<button
-					class="
-						show-modal
-						mdl-button mdl-js-button
-						mdl-button--fab
-						mdl-js-ripple-effect
-						mdl-button--colored
-					"
-				>
-					<i class="material-icons">add</i>
-				</button>
+			<div id="notification-toast" class="mdl-js-snackbar mdl-snackbar">
+				<div class="mdl-snackbar__text"></div>
+				<button class="mdl-snackbar__action" type="button"></button>
 			</div>
 		</div>
 

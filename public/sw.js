@@ -1,8 +1,8 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-const STATIC_CACHE_NAME = 'static-v3';
-const DYNAMIC_CACHE_NAME = 'dynamic-v3';
+const STATIC_CACHE_NAME = 'static-v2';
+const DYNAMIC_CACHE_NAME = 'dynamic-v2';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -67,49 +67,80 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-	const URL = 'https://pwa-demo-nil1729-default-rtdb.firebaseio.com/posts';
+	const URL = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net/getPosts';
 
-	if (event.request.url.indexOf(URL) > -1) {
-		event.respondWith(
-			fetch(event.request).then(function (res) {
-				const clonedResponse = res.clone();
-				clearStore('feed-posts')
-					.then(function () {
-						return clonedResponse.json();
+	if (event.request.method === 'GET') {
+		if (event.request.url.indexOf(URL) > -1) {
+			event.respondWith(
+				fetch(event.request).then(function (res) {
+					const clonedResponse = res.clone();
+					clearStore('feed-posts')
+						.then(function () {
+							return clonedResponse.json();
+						})
+						.then(function (data) {
+							for (let key in data) {
+								writeData('feed-posts', data[key]);
+							}
+						});
+					return res;
+				})
+			);
+		} else if (isInStaticFiles(event.request.url)) {
+			event.respondWith(caches.match(event.request));
+		} else {
+			event.respondWith(
+				// First trying to find the resource from cache
+				caches.match(event.request).then(function (response) {
+					if (response) return response;
+					// If not in cache try to load the resource from network
+					else {
+						return (
+							fetch(event.request)
+								.then(function (res) {
+									return caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
+										cache.put(event.request.url, res.clone());
+										return res;
+									});
+								})
+								// If network fails or the resource not cached yet
+								.catch(function (e) {
+									if (event.request.headers.get('accept').includes('text/html')) {
+										return caches.match('/offline.html');
+									}
+								})
+						);
+					}
+				})
+			);
+		}
+	}
+});
+
+self.addEventListener('sync', function (event) {
+	console.log('[Service Worker] Background Syncing ...', event);
+	if (event.tag === 'sync-new-post') {
+		event.waitUntil(
+			readData('sync-posts').then(function (data) {
+				for (let dt of data) {
+					fetch('https://us-central1-pwa-demo-nil1729.cloudfunctions.net/savePost', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+						body: JSON.stringify(dt),
 					})
-					.then(function (data) {
-						for (let key in data) {
-							writeData('feed-posts', data[key]);
-						}
-					});
-				return res;
-			})
-		);
-	} else if (isInStaticFiles(event.request.url)) {
-		event.respondWith(caches.match(event.request));
-	} else {
-		event.respondWith(
-			// First trying to find the resource from cache
-			caches.match(event.request).then(function (response) {
-				if (response) return response;
-				// If not in cache try to load the resource from network
-				else {
-					return (
-						fetch(event.request)
-							.then(function (res) {
-								return caches.open(DYNAMIC_CACHE_NAME).then(function (cache) {
-									cache.put(event.request.url, res.clone());
-									// trimCache(DYNAMIC_CACHE_NAME, 5);
-									return res;
-								});
-							})
-							// If network fails or the resource not cached yet
-							.catch(function (e) {
-								if (event.request.headers.get('accept').includes('text/html')) {
-									return caches.match('/offline.html');
-								}
-							})
-					);
+						.then(function (res) {
+							if (res.ok) {
+								return res.json();
+							}
+							throw new Error('Failed to Save!');
+						})
+						.then(function (data) {
+							console.log('[Service Worker]', data.message);
+							return clearItemFromStore('sync-posts', data.id);
+						})
+						.catch(function (err) {
+							console.log('Error! While sending data to the Server', err);
+						});
 				}
 			})
 		);

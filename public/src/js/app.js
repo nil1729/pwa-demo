@@ -10,10 +10,3 @@ if ('serviceWorker' in navigator) {
 			console.log(e);
 		});
 } else console.log('Service Worker not supported by this browser');
-
-/**
- *
- *
- * @Chapter Service Worker Caching
- *
- */

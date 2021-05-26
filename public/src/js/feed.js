@@ -1,22 +1,20 @@
-const dialog = document.querySelector('dialog');
 const showModalButton = document.querySelector('.show-modal');
 const feedContainer = document.querySelector('.feed-container');
+const postModal = document.querySelector('#post-modal');
+const toastContainer = document.querySelector('#notification-toast');
+const form = document.querySelector('form');
+const titleInput = document.querySelector('#post_title');
+const locationInput = document.querySelector('#post_location');
 
-if (!dialog.showModal) {
-	dialogPolyfill.registerDialog(dialog);
+function showModal() {
+	postModal.style.display = 'block';
 }
-showModalButton.addEventListener('click', function () {
-	dialog.showModal();
+function closeModal() {
+	postModal.style.display = 'none';
+}
 
-	// if (navigator.serviceWorker) {
-	// 	navigator.serviceWorker.getRegistrations().then(function (registrations) {
-	// 		for (let i in registrations) registrations[i].unregister();
-	// 	});
-	// }
-});
-dialog.querySelector('.close').addEventListener('click', function () {
-	dialog.close();
-});
+showModalButton.addEventListener('click', showModal);
+postModal.querySelector('.close').addEventListener('click', closeModal);
 
 function clearCards() {
 	while (feedContainer.hasChildNodes()) feedContainer.removeChild(feedContainer.lastChild);
@@ -43,13 +41,6 @@ function createCard({ id, image, title, location }) {
 	feedLocation.textContent = location;
 	feedCard.appendChild(feedLocation);
 
-	// Create a Save Button
-	// const saveButton = document.createElement('button');
-	// saveButton.className = 'mdl-button mdl-js-button mdl-button--raised';
-	// saveButton.textContent = 'Save';
-	// feedCard.appendChild(saveButton);
-	// saveButton.addEventListener('click', saveForOfflineAccess(imgSrc));
-
 	componentHandler.upgradeElement(feedCard);
 	feedContainer.appendChild(feedCard);
 }
@@ -59,7 +50,7 @@ function updateUI(data) {
 	for (let i in data) createCard(data[i]);
 }
 
-const URL = 'https://pwa-demo-nil1729-default-rtdb.firebaseio.com/posts.json';
+const URL = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net/getPosts';
 let networkDataReceived = false;
 
 fetch(URL)
@@ -79,3 +70,57 @@ if (window.indexedDB) {
 		if (!networkDataReceived) updateUI(data);
 	});
 }
+
+function showNotifications(message) {
+	toastContainer.MaterialSnackbar.showSnackbar({ message });
+}
+
+function sendData(data) {
+	fetch(URL, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+		body: JSON.stringify(data),
+	})
+		.then(function (res) {
+			if (res.ok) {
+				showNotifications('Your post has been successfully posted');
+			}
+		})
+		.catch(function (err) {
+			console.log(err);
+		});
+}
+
+form.addEventListener('submit', function (event) {
+	event.preventDefault();
+
+	if (titleInput.value.trim() === '' || locationInput.value.trim() === '') {
+		alert('Please enter valid data!');
+		return;
+	}
+
+	closeModal();
+
+	const newPost = {
+		id: new Date().toISOString(),
+		title: titleInput.value,
+		location: locationInput.value,
+		image:
+			'https://firebasestorage.googleapis.com/v0/b/pwa-demo-nil1729.appspot.com/o/download.jpg?alt=media&token=439861b2-5a65-4a4b-adf3-346677c69a3c',
+	};
+
+	if (navigator.serviceWorker && window.SyncManager) {
+		navigator.serviceWorker.ready.then(function (sw) {
+			writeData('sync-posts', newPost)
+				.then(function () {
+					return sw.sync.register('sync-new-post');
+				})
+				.then(function () {
+					showNotifications('Your post has been saved for syncing!');
+				})
+				.catch(function (e) {
+					console.log(e);
+				});
+		});
+	} else sendData(newPost);
+});

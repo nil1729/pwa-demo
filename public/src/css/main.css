@@ -8,15 +8,19 @@
 	background-size: cover;
 }
 .fab__btn__container {
-	position: absolute;
+	position: fixed;
 	bottom: 2vh;
 	right: 1vw;
 	z-index: 5;
 }
 
 .post-dialog {
-	height: 90%;
-	width: 65vw;
+	height: 100%;
+	width: 100%;
+	background-color: #fff;
+	position: fixed;
+	z-index: 99;
+	display: none;
 }
 .post-dialog .close-btn-container {
 	width: 100%;
@@ -26,7 +30,7 @@
 	margin: 1rem auto;
 }
 .post-dialog .textfield-container.mdl-textfield {
-	width: 75%;
+	width: 50%;
 }
 .post-dialog .submit-btn-container {
 	margin: 3rem 4rem;
@@ -49,6 +53,9 @@
 .demo-card-wide > .mdl-card__supporting-text {
 	font-size: 16px;
 }
+main .page-content .feed-container {
+	margin-bottom: 20px;
+}
 @media screen and (max-width: 600px) {
 	.bg__pic {
 		height: 25vh;
@@ -62,10 +69,6 @@
 		margin: 5px 0 10px;
 	}
 	.post-dialog .textfield-container.mdl-textfield {
-		width: 100%;
-	}
-	.post-dialog {
-		height: 100%;
 		width: 100%;
 	}
 	.post-dialog .submit-btn-container {
