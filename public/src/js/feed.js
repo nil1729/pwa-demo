@@ -22,11 +22,15 @@ function captureImage() {
 	canvas
 		.getContext('2d')
 		.drawImage(videoPlayer, 0, 0, videoPlayer.videoWidth, videoPlayer.videoHeight); // for drawing the video element on the canvas
-
-	videoPlayer.srcObject.getVideoTracks().forEach(function (track) {
-		track.stop();
-	});
 	picture = dataURItoBlob(canvasElement.toDataURL());
+	closeVideoPlayer();
+}
+
+function closeVideoPlayer() {
+	if (videoPlayer.srcObject)
+		videoPlayer.srcObject.getVideoTracks().forEach(function (track) {
+			track.stop();
+		});
 }
 
 function initializeMedia() {
@@ -74,6 +78,7 @@ function showModal() {
 }
 function closeModal() {
 	clearInput();
+	closeVideoPlayer();
 	postModal.style.display = 'none';
 	videoPlayer.style.display = 'none';
 	imagePickerArea.style.display = 'none';
@@ -158,8 +163,11 @@ function sendData(data) {
 	postData.append('id', data.id);
 	postData.append('location', data.location);
 	postData.append('title', data.title);
-	postData.append('image', data.image, URL.createObjectURL(data.image));
-	URL.revokeObjectURL(data.image);
+	postData.append(
+		'image',
+		data.image,
+		data.id + '.' + data.image.type.split('/').pop().toLowerCase()
+	);
 
 	fetch(`${SERVER_DOMAIN}/savePost`, {
 		method: 'POST',
@@ -183,12 +191,17 @@ form.addEventListener('submit', function (event) {
 		return;
 	}
 
+	if (!picture) {
+		picture = imagePicker.files[0];
+	}
+
 	const newPost = {
 		id: new Date().toISOString(),
 		title: titleInput.value,
 		location: locationInput.value,
 		image: picture,
 	};
+	console.log(newPost);
 
 	// Clear Input and Close Modal
 	closeModal();

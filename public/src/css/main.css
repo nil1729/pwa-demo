@@ -1,3 +1,6 @@
+.mdl-layout__content {
+	position: initial;
+}
 .bg__pic {
 	height: 23vh;
 	width: 65vw;
@@ -15,13 +18,14 @@
 }
 
 .post-dialog {
-	height: 100%;
+	height: 100vh;
 	width: 100%;
 	background-color: #fff;
 	position: absolute;
+	top: 54px;
+	bottom: 0;
 	z-index: 99;
 	display: none;
-	overflow: scroll;
 	padding-bottom: 25px;
 }
 .post-dialog .close-btn-container {
@@ -44,7 +48,7 @@
 }
 .demo-card-wide > .mdl-card__title {
 	color: #fff;
-	height: 176px;
+	height: 300px;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -80,7 +84,37 @@ main .page-content .feed-container {
 	right: 0;
 }
 
+.post-dialog#post-modal video,
+.post-dialog#post-modal #picked-image,
+.post-dialog#post-modal canvas {
+	display: none;
+	width: 500px;
+	height: 360px;
+	margin: auto;
+}
+.post-dialog .textfield-container.mdl-textfield input::placeholder {
+	color: rgba(0, 0, 0, 0.26);
+}
+.post-dialog #new-post-form #get-location-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: auto;
+}
+.post-dialog #new-post-form #get-location-btn .mdl-spinner {
+	margin-left: 10px;
+	display: none;
+}
+.post-dialog #new-post-form .image-picker-container {
+	display: none;
+}
+.post-dialog #capture-btn {
+	margin: 25px auto 15px auto;
+}
 @media screen and (max-width: 600px) {
+	.page-content .feed-container .mdl-card__title-text {
+		font-size: 20px;
+	}
 	.bg__pic {
 		height: 25vh;
 		width: 100%;
@@ -92,12 +126,13 @@ main .page-content .feed-container {
 		font-size: 18px;
 		margin: 5px 0 10px;
 	}
+	.post-dialog {
+		min-height: 100%;
+		height: fit-content;
+	}
 	.post-dialog .textfield-container.mdl-textfield {
 		width: 100%;
 		margin-top: 0;
-	}
-	.post-dialog .textfield-container.mdl-textfield input::placeholder {
-		color: rgba(0, 0, 0, 0.26);
 	}
 	.post-dialog .submit-btn-container {
 		margin: 2rem auto;
@@ -109,26 +144,13 @@ main .page-content .feed-container {
 	.post-dialog #new-post-form #image-picker-label {
 		margin: 20px 0 0 0;
 	}
-	.post-dialog #new-post-form .image-picker-container {
-		display: none;
-	}
-	.post-dialog #new-post-form #submit-btn {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin: auto;
-	}
-	.post-dialog #new-post-form #submit-btn .mdl-spinner {
-		margin-left: 10px;
-		display: none;
-	}
-
 	.post-dialog#post-modal video,
 	.post-dialog#post-modal #picked-image,
 	.post-dialog#post-modal canvas {
 		display: none;
 		width: 100%;
 		max-width: 100%;
+		height: auto;
 	}
 	.post-dialog #capture-btn {
 		margin: 15px auto;
