@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>PWA | Service Worker - Push Notifications</title>
+		<title>PWA | Service Worker - Native Device Feature</title>
 		<link
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
@@ -84,19 +84,45 @@
 			<main class="mdl-layout__content">
 				<div class="mdl-dialog post-dialog" id="post-modal">
 					<div class="mdl-dialog__content">
-						<div class="photo-container"></div>
-						<div class="text-center">
-							<button
-								class="
-									mdl-button mdl-js-button
-									mdl-button--raised mdl-button--colored
-									mdl-js-ripple-effect
-								"
-							>
-								<span class="material-icons"> photo_camera </span> capture
-							</button>
+						<div class="photo-container">
+							<video id="player" autoplay></video>
+							<canvas id="canvas" width="320px" height="240px"></canvas>
+							<img id="picked-image" src="" alt="" />
+							<div class="text-center">
+								<button
+									class="
+										mdl-button mdl-js-button
+										mdl-button--raised mdl-button--colored
+										mdl-js-ripple-effect
+									"
+									id="capture-btn"
+								>
+									<span class="material-icons"> photo_camera </span> capture
+								</button>
+							</div>
 						</div>
+
 						<form id="new-post-form">
+							<div class="image-picker-container">
+								<div class="text-center">
+									<h5 id="image-picker-label">
+										<span class="material-icons"> attach_file </span> Pick an Image
+									</h5>
+								</div>
+								<div class="textfield-container mdl-textfield mdl-js-textfield mdl-textfield--file">
+									<input
+										class="mdl-textfield__input"
+										placeholder="Image (JPG/PNG/JPEG)"
+										type="text"
+										id="image-picker-text"
+										readonly
+									/>
+									<div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+										<i class="material-icons">attach_file</i
+										><input type="file" id="image-picker" accept="image/*" />
+									</div>
+								</div>
+							</div>
 							<div
 								class="
 									textfield-container
@@ -104,7 +130,13 @@
 									mdl-textfield--floating-label
 								"
 							>
-								<input class="mdl-textfield__input" type="text" name="title" id="post_title" />
+								<input
+									class="mdl-textfield__input"
+									type="text"
+									name="title"
+									id="post_title"
+									required
+								/>
 								<label class="mdl-textfield__label" for="post_title">Title</label>
 							</div>
 							<div
@@ -119,12 +151,18 @@
 									type="text"
 									name="location"
 									id="post_location"
+									required
 								/>
 								<label class="mdl-textfield__label" for="post_location">Location</label>
 							</div>
-							<div class="text-center">
-								<button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+							<div>
+								<button
+									type="button"
+									class="mdl-button mdl-js-button mdl-js-ripple-effect"
+									id="submit-btn"
+								>
 									<span class="material-icons"> location_on </span> get location
+									<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
 								</button>
 							</div>
 							<div class="text-center submit-btn-container">

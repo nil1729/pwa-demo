@@ -18,9 +18,11 @@
 	height: 100%;
 	width: 100%;
 	background-color: #fff;
-	position: fixed;
+	position: absolute;
 	z-index: 99;
 	display: none;
+	overflow: scroll;
+	padding-bottom: 25px;
 }
 .post-dialog .close-btn-container {
 	width: 100%;
@@ -56,6 +58,28 @@
 main .page-content .feed-container {
 	margin-bottom: 20px;
 }
+
+/* Post Modal */
+.mdl-button--file input {
+	cursor: pointer;
+	height: 100%;
+	right: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	width: 300px;
+	z-index: 4;
+}
+
+.mdl-textfield--file .mdl-textfield__input {
+	box-sizing: border-box;
+	width: calc(100% - 32px);
+}
+
+.mdl-textfield--file .mdl-button--file {
+	right: 0;
+}
+
 @media screen and (max-width: 600px) {
 	.bg__pic {
 		height: 25vh;
@@ -70,12 +94,43 @@ main .page-content .feed-container {
 	}
 	.post-dialog .textfield-container.mdl-textfield {
 		width: 100%;
+		margin-top: 0;
+	}
+	.post-dialog .textfield-container.mdl-textfield input::placeholder {
+		color: rgba(0, 0, 0, 0.26);
 	}
 	.post-dialog .submit-btn-container {
-		margin: 2rem 3rem;
+		margin: 2rem auto;
 	}
 	.demo-card-wide.mdl-card {
 		width: 90%;
 		margin: 5px auto 13px;
+	}
+	.post-dialog #new-post-form #image-picker-label {
+		margin: 20px 0 0 0;
+	}
+	.post-dialog #new-post-form .image-picker-container {
+		display: none;
+	}
+	.post-dialog #new-post-form #submit-btn {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: auto;
+	}
+	.post-dialog #new-post-form #submit-btn .mdl-spinner {
+		margin-left: 10px;
+		display: none;
+	}
+
+	.post-dialog#post-modal video,
+	.post-dialog#post-modal #picked-image,
+	.post-dialog#post-modal canvas {
+		display: none;
+		width: 100%;
+		max-width: 100%;
+	}
+	.post-dialog #capture-btn {
+		margin: 15px auto;
 	}
 }

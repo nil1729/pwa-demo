@@ -2,7 +2,7 @@ importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
 const STATIC_CACHE_NAME = 'static-v1';
-const DYNAMIC_CACHE_NAME = 'dynamic-v1';
+const DYNAMIC_CACHE_NAME = 'dynamic-v2';
 const STATIC_FILES = [
 	'/',
 	'/index.html',
@@ -121,10 +121,16 @@ self.addEventListener('sync', function (event) {
 		event.waitUntil(
 			readData('sync-posts').then(function (data) {
 				for (let dt of data) {
+					const postData = new FormData();
+					postData.append('id', dt.id);
+					postData.append('location', dt.location);
+					postData.append('title', dt.title);
+					postData.append('image', dt.image, URL.createObjectURL(dt.image));
+					URL.revokeObjectURL(dt.image);
+
 					fetch(`${SERVER_DOMAIN}/savePost`, {
 						method: 'POST',
-						headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-						body: JSON.stringify(dt),
+						body: postData,
 					})
 						.then(function (res) {
 							if (res.ok) {
