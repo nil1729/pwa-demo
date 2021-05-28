@@ -1,6 +1,8 @@
 const SERVER_DOMAIN = 'https://us-central1-pwa-demo-nil1729.cloudfunctions.net';
+const GEOCODING_API_URL = 'https://us1.locationiq.com/v1/reverse.php';
 const vapidPublicKey =
 	'BP4PlsYeQd4Wg6Mqn-o48s6mtktxM2EexAHHBVzplZqUUt8BSooje8UcRnmcAKhPBC6ETLlx21-MiX2yYu9UUnw';
+const GEOCODING_API_KEY = 'pk.7b5b75ce36499da797a396dac9a449cc';
 
 const dbPromise = idb.openDB('Posts', 1, {
 	upgrade(db) {

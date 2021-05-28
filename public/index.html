@@ -155,15 +155,18 @@
 								/>
 								<label class="mdl-textfield__label" for="post_location">Location</label>
 							</div>
-							<div>
+							<div class="location-btn-container">
 								<button
 									type="button"
 									class="mdl-button mdl-js-button mdl-js-ripple-effect"
 									id="get-location-btn"
 								>
 									<span class="material-icons"> location_on </span> get location
-									<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
 								</button>
+								<div
+									class="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active"
+									id="location-spinner"
+								></div>
 							</div>
 							<div class="text-center submit-btn-container">
 								<button

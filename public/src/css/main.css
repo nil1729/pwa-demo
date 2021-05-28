@@ -95,14 +95,12 @@ main .page-content .feed-container {
 .post-dialog .textfield-container.mdl-textfield input::placeholder {
 	color: rgba(0, 0, 0, 0.26);
 }
-.post-dialog #new-post-form #get-location-btn {
+.post-dialog #new-post-form .location-btn-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: auto;
 }
-.post-dialog #new-post-form #get-location-btn .mdl-spinner {
-	margin-left: 10px;
+.post-dialog #new-post-form #location-spinner {
 	display: none;
 }
 .post-dialog #new-post-form .image-picker-container {

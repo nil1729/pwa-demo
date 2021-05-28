@@ -67,7 +67,7 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-	if (event.request.method === 'GET') {
+	if (event.request.method === 'GET' && event.request.url.indexOf(GEOCODING_API_URL) < 0) {
 		if (event.request.url.indexOf(SERVER_DOMAIN) > -1) {
 			event.respondWith(
 				fetch(event.request).then(function (res) {

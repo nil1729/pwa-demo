@@ -12,7 +12,11 @@ const canvasElement = document.querySelector('canvas#canvas');
 const pickedImage = document.querySelector('#picked-image');
 const imagePicker = document.querySelector('#image-picker');
 const pickedImageText = document.querySelector('#image-picker-text');
+const getLocationBtn = document.querySelector('#get-location-btn');
+const locationSpinner = document.querySelector('#location-spinner');
+const locationBtnContainer = document.querySelector('.location-btn-container');
 let picture;
+let fetchedLocation;
 
 function captureImage() {
 	videoPlayer.style.display = 'none';
@@ -32,6 +36,56 @@ function closeVideoPlayer() {
 			track.stop();
 		});
 }
+
+function checkGeolocationFeature() {
+	if (!navigator.geolocation) {
+		locationBtnContainer.style.display = 'none';
+		return;
+	}
+}
+
+function getLocation(position) {
+	const { latitude, longitude } = position.coords;
+	fetch(
+		`${GEOCODING_API_URL}?key=${GEOCODING_API_KEY}&lat=${latitude}&lon=${longitude}&format=json`
+	)
+		.then(function (res) {
+			return res.json();
+		})
+		.then(function (data) {
+			let addressCityOrState = data.address.city || data.address.state;
+			fetchedLocation = `In ${addressCityOrState || ''}${addressCityOrState ? ', ' : ''}${
+				data.address.country
+			}`;
+			locationInput.value = fetchedLocation;
+			locationInput.parentElement.classList.add('is-focused', 'is-dirty');
+			getLocationBtn.style.display = 'inline-block';
+			locationSpinner.style.display = 'none';
+		})
+		.catch(function (err) {
+			getLocationBtn.style.display = 'inline-block';
+			locationSpinner.style.display = 'none';
+			alert(`Sorry, couldn't fetch the location, Please type manually`);
+		});
+}
+
+function getLocationCoordinates() {
+	navigator.geolocation.getCurrentPosition(
+		getLocation,
+		function (error) {
+			getLocationBtn.style.display = 'inline-block';
+			locationSpinner.style.display = 'none';
+			alert(`Sorry, couldn't fetch the location, Please type manually`);
+		},
+		{ timeout: 5000 }
+	);
+}
+
+getLocationBtn.addEventListener('click', function () {
+	this.style.display = 'none';
+	locationSpinner.style.display = 'inline-block';
+	getLocationCoordinates();
+});
 
 function initializeMedia() {
 	if (!navigator.mediaDevices) {
@@ -75,7 +129,9 @@ function showModal() {
 	});
 	postModal.style.display = 'block';
 	initializeMedia();
+	checkGeolocationFeature();
 }
+
 function closeModal() {
 	clearInput();
 	closeVideoPlayer();
@@ -85,6 +141,8 @@ function closeModal() {
 	picture = undefined;
 	canvasElement.getContext('2d').clearRect(0, 0, canvasElement.width, canvasElement.height);
 	canvasElement.style.display = 'none';
+	getLocationBtn.style.display = 'inline-block';
+	locationSpinner.style.display = 'none';
 }
 
 showModalButton.addEventListener('click', showModal);
@@ -191,8 +249,12 @@ form.addEventListener('submit', function (event) {
 		return;
 	}
 
+	if (!picture) picture = imagePicker.files[0];
+
+	// Last Check
 	if (!picture) {
-		picture = imagePicker.files[0];
+		alert('Please pick an Image!');
+		return;
 	}
 
 	const newPost = {
@@ -201,7 +263,6 @@ form.addEventListener('submit', function (event) {
 		location: locationInput.value,
 		image: picture,
 	};
-	console.log(newPost);
 
 	// Clear Input and Close Modal
 	closeModal();

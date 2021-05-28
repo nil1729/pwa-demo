@@ -17,7 +17,6 @@ const corsOptions = {
 		}
 	},
 };
-
 const cors = require('cors')(corsOptions);
 const Busboy = require('busboy');
 const path = require('path');
