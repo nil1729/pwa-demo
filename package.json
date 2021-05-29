@@ -4,7 +4,9 @@
 	"description": "Understanding the manifest.json file stucture and it's importance",
 	"main": "index.js",
 	"scripts": {
-		"start": "http-server -c-1 -p 8000"
+		"start": "http-server -c-1 -p 8000",
+		"generateSW": "workbox wizard --injectManifest",
+		"buildSW": "nodemon --exec \"workbox injectManifest workbox-config.js\" --watch public/sw-base.js"
 	},
 	"keywords": [
 		"pwa",
@@ -14,6 +16,8 @@
 	"author": "Nilanjan Deb",
 	"license": "MIT",
 	"devDependencies": {
-		"http-server": "^0.12.3"
+		"http-server": "^0.12.3",
+		"nodemon": "^2.0.7",
+		"workbox-cli": "^6.1.5"
 	}
 }

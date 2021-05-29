@@ -216,7 +216,7 @@ function showNotifications(message) {
 	toastContainer.MaterialSnackbar.showSnackbar({ message });
 }
 
-function sendData(data) {
+async function sendData(data) {
 	const postData = new FormData();
 	postData.append('id', data.id);
 	postData.append('location', data.location);
@@ -232,12 +232,10 @@ function sendData(data) {
 		body: postData,
 	})
 		.then(function (res) {
-			if (res.ok) {
-				showNotifications('Your post has been successfully posted');
-			}
+			showNotifications('Your post has been successfully posted');
 		})
 		.catch(function (err) {
-			console.log(err);
+			showNotifications('Your post has been saved for syncing!');
 		});
 }
 
@@ -268,20 +266,8 @@ form.addEventListener('submit', function (event) {
 	closeModal();
 	clearInput();
 
-	if (navigator.serviceWorker && window.SyncManager) {
-		navigator.serviceWorker.ready.then(function (sw) {
-			writeData('sync-posts', newPost)
-				.then(function () {
-					return sw.sync.register('sync-new-post');
-				})
-				.then(function () {
-					showNotifications('Your post has been saved for syncing!');
-				})
-				.catch(function (e) {
-					sendData(newPost);
-				});
-		});
-	} else sendData(newPost);
+	// Send data to Server
+	sendData(newPost);
 });
 
 /* Post Modal */

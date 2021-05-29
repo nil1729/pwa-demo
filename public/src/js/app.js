@@ -3,7 +3,7 @@ const enableNotificationsButtons = document.querySelectorAll('.enable-notificati
 
 if (navigator.serviceWorker) {
 	navigator.serviceWorker
-		.register('/sw.js')
+		.register('/service-worker.js')
 		.then(function () {
 			console.log('Service Worker Registered!');
 		})
@@ -60,6 +60,9 @@ async function addSubscription() {
 				if (res.ok) {
 					return displayConfirmNotification();
 				}
+			})
+			.catch(function (err) {
+				console.error(err);
 			});
 	}
 }
