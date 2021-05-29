@@ -1,0 +1,156 @@
+.mdl-layout__content {
+	position: initial;
+}
+.bg__pic {
+	height: 23vh;
+	width: 65vw;
+	background-image: url('/src/images/main-bg.jpg');
+	margin: auto;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+.fab__btn__container {
+	position: fixed;
+	bottom: 2vh;
+	right: 1vw;
+	z-index: 5;
+}
+
+.post-dialog {
+	height: 100vh;
+	width: 100%;
+	background-color: #fff;
+	position: absolute;
+	top: 54px;
+	bottom: 0;
+	z-index: 99;
+	display: none;
+	padding-bottom: 25px;
+}
+.post-dialog .close-btn-container {
+	width: 100%;
+}
+.post-dialog .textfield-container {
+	display: block;
+	margin: 1rem auto;
+}
+.post-dialog .textfield-container.mdl-textfield {
+	width: 50%;
+}
+.post-dialog .submit-btn-container {
+	margin: 3rem 4rem;
+}
+
+.demo-card-wide.mdl-card {
+	width: 512px;
+	margin: 10px auto 15px;
+}
+.demo-card-wide > .mdl-card__title {
+	color: #fff;
+	height: 300px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.demo-card-wide > .mdl-card__title h2.mdl-card__title-text {
+	font-weight: 400;
+}
+.demo-card-wide > .mdl-card__supporting-text {
+	font-size: 16px;
+}
+main .page-content .feed-container {
+	margin-bottom: 20px;
+}
+
+/* Post Modal */
+.mdl-button--file input {
+	cursor: pointer;
+	height: 100%;
+	right: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	width: 300px;
+	z-index: 4;
+}
+
+.mdl-textfield--file .mdl-textfield__input {
+	box-sizing: border-box;
+	width: calc(100% - 32px);
+}
+
+.mdl-textfield--file .mdl-button--file {
+	right: 0;
+}
+
+.post-dialog#post-modal video,
+.post-dialog#post-modal #picked-image,
+.post-dialog#post-modal canvas {
+	display: none;
+	width: 500px;
+	height: 360px;
+	margin: auto;
+}
+.post-dialog .textfield-container.mdl-textfield input::placeholder {
+	color: rgba(0, 0, 0, 0.26);
+}
+.post-dialog #new-post-form .location-btn-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.post-dialog #new-post-form #location-spinner {
+	display: none;
+}
+.post-dialog #new-post-form .image-picker-container {
+	display: none;
+}
+.post-dialog #capture-btn {
+	margin: 25px auto 15px auto;
+}
+@media screen and (max-width: 600px) {
+	.page-content .feed-container .mdl-card__title-text {
+		font-size: 20px;
+	}
+	.bg__pic {
+		height: 25vh;
+		width: 100%;
+	}
+	.fab__btn__container {
+		right: 2vw;
+	}
+	.mdl-layout__content .page-content h4.display-1 {
+		font-size: 18px;
+		margin: 5px 0 10px;
+	}
+	.post-dialog {
+		min-height: 100%;
+		height: fit-content;
+	}
+	.post-dialog .textfield-container.mdl-textfield {
+		width: 100%;
+		margin-top: 0;
+	}
+	.post-dialog .submit-btn-container {
+		margin: 2rem auto;
+	}
+	.demo-card-wide.mdl-card {
+		width: 90%;
+		margin: 5px auto 13px;
+	}
+	.post-dialog #new-post-form #image-picker-label {
+		margin: 20px 0 0 0;
+	}
+	.post-dialog#post-modal video,
+	.post-dialog#post-modal #picked-image,
+	.post-dialog#post-modal canvas {
+		display: none;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+	}
+	.post-dialog #capture-btn {
+		margin: 15px auto;
+	}
+}

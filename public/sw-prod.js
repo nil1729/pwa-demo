@@ -1,8 +1,3 @@
-importScripts('/workbox-sw.js');
-importScripts('/src/js/idb.js');
-importScripts('/src/js/utility.js');
-workbox.setConfig({ debug: true });
-
 const FALLBACK_HTML_URL = '/offline.html';
 const FALLBACK_IMAGE_URL = '/src/images/offline.jpg';
 

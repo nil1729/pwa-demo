@@ -9,17 +9,14 @@ const FALLBACK_IMAGE_URL = '/src/images/offline.jpg';
 self.skipWaiting();
 
 self.addEventListener('activate', (event) => {
-	event.waitUntil(
-		(async () => {
-			if ('navigationPreload' in self.registration) {
-				await self.registration.navigationPreload.enable();
-			}
-		})()
-	);
 	self.clients.claim();
 });
 
-workbox.precaching.precacheAndRoute([{"revision":"2cab47d9e04d664d93c8d91aec59e812","url":"favicon.ico"},{"revision":"74edfd0b90b53625663ccc1b81927d2c","url":"index.html"},{"revision":"92b2c8e54007ca32af0b9efe5d0455bb","url":"manifest.json"},{"revision":"4dac8d9151f1120207ee97c50de634c6","url":"offline.html"},{"revision":"26719f404eef804028ddda347c8efc26","url":"src/css/app.css"},{"revision":"435e31a13d5e089c704b268b1a38db43","url":"src/css/help.css"},{"revision":"3d8bcee9c08272304c8ccd642e141196","url":"src/css/main.css"},{"revision":"9f8374415ec7c668a47396b84a9db73d","url":"src/js/app.js"},{"revision":"59336d002230226ae977fd402a7d07d0","url":"src/js/feed.js"},{"revision":"6b82fbb55ae19be4935964ae8c338e92","url":"src/js/fetch.js"},{"revision":"7f14df9b9adfa61a1c300e7b9e50680d","url":"src/js/idb.js"},{"revision":"713af0c6ce93dbbce2f00bf0a98d0541","url":"src/js/material.min.js"},{"revision":"10c2238dcd105eb23f703ee53067417f","url":"src/js/promise.js"},{"revision":"41d7b8676a87517a4f413e857bef49ea","url":"src/js/utility.js"},{"revision":"0ccda0de0d403edf16b276efb53da557","url":"workbox-sw.js"},{"revision":"84c568338e0d6fd0e728fdac08b2aefd","url":"src/images/main-bg.jpg"},{"revision":"73898b781627214e1df133f6474bf13d","url":"src/images/offline.jpg"}]);
+if (workbox.navigationPreload.isSupported()) {
+	workbox.navigationPreload.enable();
+}
+
+workbox.precaching.precacheAndRoute([{"revision":"2cab47d9e04d664d93c8d91aec59e812","url":"favicon.ico"},{"revision":"74edfd0b90b53625663ccc1b81927d2c","url":"index.html"},{"revision":"92b2c8e54007ca32af0b9efe5d0455bb","url":"manifest.json"},{"revision":"4dac8d9151f1120207ee97c50de634c6","url":"offline.html"},{"revision":"26719f404eef804028ddda347c8efc26","url":"src/css/app.css"},{"revision":"435e31a13d5e089c704b268b1a38db43","url":"src/css/help.css"},{"revision":"3d8bcee9c08272304c8ccd642e141196","url":"src/css/main.css"},{"revision":"9f8374415ec7c668a47396b84a9db73d","url":"src/js/app.js"},{"revision":"59336d002230226ae977fd402a7d07d0","url":"src/js/feed.js"},{"revision":"6b82fbb55ae19be4935964ae8c338e92","url":"src/js/fetch.js"},{"revision":"7f14df9b9adfa61a1c300e7b9e50680d","url":"src/js/idb.js"},{"revision":"713af0c6ce93dbbce2f00bf0a98d0541","url":"src/js/material.min.js"},{"revision":"10c2238dcd105eb23f703ee53067417f","url":"src/js/promise.js"},{"revision":"41d7b8676a87517a4f413e857bef49ea","url":"src/js/utility.js"},{"revision":"a0203839485299221dcb4e4fa19d7f7f","url":"sw-prod.js"},{"revision":"0ccda0de0d403edf16b276efb53da557","url":"workbox-sw.js"},{"revision":"84c568338e0d6fd0e728fdac08b2aefd","url":"src/images/main-bg.jpg"},{"revision":"73898b781627214e1df133f6474bf13d","url":"src/images/offline.jpg"},{"revision":"83011e228238e66949f0aa0f28f128ef","url":"src/images/icons/app-icon-144x144.png"}]);
 
 workbox.routing.registerRoute(
 	({ url }) =>

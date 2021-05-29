@@ -6,7 +6,11 @@
 	"scripts": {
 		"start": "http-server -c-1 -p 8000",
 		"generateSW": "workbox wizard --injectManifest",
-		"buildSW": "nodemon --exec \"workbox injectManifest workbox-config.js\" --watch public/sw-base.js"
+		"buildSW": "workbox injectManifest workbox-config.js",
+		"watchSW": "nodemon --exec \"npm run buildSW\" --watch public/sw-base.js",
+		"minifyJS": "uglifyjs public/src/js/promise.js public/src/js/fetch.js public/src/js/idb.js public/src/js/utility.js public/src/js/app.js -o prod/src/js/app.min.js -c -m --no-annotations && uglifyjs public/src/js/feed.js  -o prod/src/js/feed.min.js -c -m --no-annotations",
+		"prodSW": "workbox injectManifest workbox-config-prod.js && uglifyjs public/workbox-sw.js public/src/js/idb.js public/src/js/utility.js prod/service-worker.js -o prod/service-worker.js -c -m --no-annotations",
+		"prod": "rm -rf prod && cp -r ./public/ ./prod && find ./prod -type f -iname \\*.js -delete && npm run minifyJS && cp ./public/src/js/material.min.js ./prod/src/js/ && npm run prodSW"
 	},
 	"keywords": [
 		"pwa",
@@ -18,6 +22,7 @@
 	"devDependencies": {
 		"http-server": "^0.12.3",
 		"nodemon": "^2.0.7",
+		"uglify-js": "^3.13.8",
 		"workbox-cli": "^6.1.5"
 	}
 }
