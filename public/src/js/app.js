@@ -1,7 +1,7 @@
 if (!window.Promise) window.Promise = Promise;
 const enableNotificationsButtons = document.querySelectorAll('.enable-notifications');
 
-if ('serviceWorker' in navigator) {
+if (navigator.serviceWorker) {
 	navigator.serviceWorker
 		.register('/sw.js')
 		.then(function () {
@@ -12,7 +12,7 @@ if ('serviceWorker' in navigator) {
 		});
 } else console.log('Service Worker not supported by this browser');
 
-function displayConfirmNotification() {
+async function displayConfirmNotification() {
 	if (navigator.serviceWorker) {
 		const options = {
 			body: 'You successfully subscribed to our Notification Services',
@@ -22,12 +22,8 @@ function displayConfirmNotification() {
 			lang: 'en-US',
 			vibrate: [100, 50, 200],
 			badge: '/src/images/icons/app-icon-96x96.png',
-			// tag: 'confirm-notification',
-			// renotify: true,
-			// actions: [
-			// 	{ action: 'confirm', title: 'Okay', icon: '/src/images/icons/app-icon-96x96.png' },
-			// 	{ action: 'cancel', title: 'Cancel', icon: '/src/images/icons/app-icon-96x96.png' },
-			// ],
+			tag: 'confirm-notification',
+			renotify: false,
 		};
 		return navigator.serviceWorker.ready.then(function (sw) {
 			sw.showNotification('Successfully Subscribed!', options);
@@ -35,11 +31,48 @@ function displayConfirmNotification() {
 	}
 }
 
+async function addSubscription() {
+	if (navigator.serviceWorker) {
+		let swReg;
+		return navigator.serviceWorker.ready
+			.then(function (sw) {
+				swReg = sw;
+				return sw.pushManager.getSubscription();
+			})
+			.then(function (subscription) {
+				if (subscription === null) {
+					return swReg.pushManager.subscribe({
+						userVisibleOnly: true,
+						applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+					});
+				} else {
+					// Do nothing
+				}
+			})
+			.then(function (newSubscription) {
+				return fetch(`${SERVER_DOMAIN}/addNewSubscription`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+					body: JSON.stringify({ subscription: newSubscription }),
+				});
+			})
+			.then(function (res) {
+				if (res.ok) {
+					return displayConfirmNotification();
+				}
+			});
+	}
+}
+
 function askForNotificationPermissions() {
 	if (Notification.permission === 'default') {
 		Notification.requestPermission().then(function (result) {
 			if (result === 'granted') {
-				displayConfirmNotification().then(hideNotificationsButtons);
+				addSubscription()
+					.then(hideNotificationsButtons)
+					.catch(function (err) {
+						console.log(err);
+					});
 			}
 		});
 	} else if (Notification.permission === 'denied') {
