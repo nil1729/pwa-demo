@@ -147,9 +147,62 @@ self.addEventListener('sync', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
 	console.log('[Service Worker] Notification Clicked', event);
-	event.notification.close();
+	let notification = event.notification;
+
+	if (event.action === 'open') {
+		event.waitUntil(
+			clients.matchAll().then(function (clientList) {
+				let client = clientList.find(function (it) {
+					return it.visibilityState === 'visible';
+				});
+				if (client) {
+					client.navigate(notification.data.url);
+					client.focus();
+				} else {
+					clients.openWindow(notification.data.url);
+				}
+				notification.close();
+			})
+		);
+	} else notification.close();
 });
 
 self.addEventListener('notificationclose', function (event) {
 	console.log('[Service Worker] Notification Closed', event);
+});
+
+self.addEventListener('push', function (event) {
+	console.log('[Service Worker] Push Notification received', event);
+
+	let data = {
+		title: 'New Post',
+		content: 'New post added to PWAGram',
+		postPhoto: '/src/images/main-bg.jpg',
+		openURL: '/',
+	};
+
+	if (event.data) {
+		data = JSON.parse(event.data.text());
+	}
+
+	const options = {
+		body: data.content,
+		icon: '/src/images/icons/app-icon-96x96.png',
+		image: data.postPhoto,
+		dir: 'ltr',
+		lang: 'en-US',
+		vibrate: [100, 50, 200],
+		badge: '/src/images/icons/app-icon-96x96.png',
+		tag: 'new-post-notification',
+		renotify: false,
+		actions: [
+			{ action: 'open', title: 'Open Post', icon: '/src/images/icons/open.png' },
+			{ action: 'close', title: 'Close', icon: '/src/images/icons/close.png' },
+		],
+		data: {
+			url: data.openURL,
+		},
+	};
+
+	event.waitUntil(self.registration.showNotification(data.title, options));
 });
