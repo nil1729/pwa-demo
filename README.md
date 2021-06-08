@@ -1,81 +1,75 @@
-## Background Sync
+## Native Device Features
 
-- Background sync is a new web API that lets you defer actions until the user has stable connectivity. This is useful for ensuring that whatever the user wants to send, is actually sent..
-- > ![slide-1](./slides/1.jpeg)
+- This feature allows our users not to leave our web app to attach some kind of media or something like that. Via Native Device feature like GeoLocation API we can find the user Current Coordinates of location and via Media API we can capture use device camera or microphone.
+- > Initializing Media API
 
-- We are going to use Firebase Functions for sending and getting data from the Firebase Database.
-
-  - > Register a Sync Task
+  - **Code for this Example**
 
     ```
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
+      function initializeMedia() {
 
-        // Form submit handle
-
-        if (navigator.serviceWorker && window.SyncManager) {
-          navigator.serviceWorker.ready.then(function (sw) {
-            // Writing data to indexedDB so that we can send the request to server whenever connection reestablished
-            writeData('<- Store Name IndexedDB ->', <- New Post ->)
-              .then(function () {
-                return sw.sync.register('sync-new-post');
-              })
-              .then(function () {
-                // Do some stuffs
-              })
-              .catch(function (e) {
-                // If anything gone wrong in this process try direct send data to server
-              });
-          });
-        } else {
-          // Direct send data to server
-        };
-      });
-    ```
-
-  - > Listening to Sync Event
-
-    ```
-      self.addEventListener('sync', function (event) {
-        if (event.tag === <- Distinct Sync Tag Name ->) {
-          event.waitUntil(
-
-            // read data from the indexedDB which should be sent to the server
-            readData(<- Store Name IndexedDB ->).then(function (data) {
-                ...
-                ...
-                fetch(<- Server URL ->, {
-                  method: ['POST', 'DELETE', 'PUT'],
-                  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-                  body: JSON.stringify(<- Data ->),
-                })
-                  .then(function (res) {
-
-                    // Do some checks to make sure data saved successfully
-                    if (res.ok) {
-                      return res.json();
-                    }
-                    throw new Error('Failed to Save!');
-                  })
-                  .then(function (data) {
-                    // Do some stuffs
-
-                    // Delete that data from indexedDB
-                    return clearItemFromStore(<- Store Name ->, <- Distinct Identifier for that data ->);
-                  })
-                  .catch(function (err) {
-                    console.log('Error! While sending data to the Server', err);
-                  });
-                ...
-                ...
-            })
-          );
+        if (!navigator.mediaDevices) {
+          navigator.mediaDevices = {};
         }
-      });
+
+        if (!navigator.mediaDevices.getUserMedia) {
+
+          navigator.mediaDevices.getUserMedia = function (constraints) {
+
+            // Safari or Mozilla Browsers
+            let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+            if (!getUserMedia) {
+              return Promise.reject(new Error('Browser does not support getUserMedia'));
+            }
+
+            return new Promise(function (resolve, reject) {
+              getUserMedia.call(navigator, constraints, resolve, reject);
+            });
+
+          };
+        }
+
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+
+            // Do some stuffs to show the current stream to the User
+
+          })
+          .catch(function (err) {
+
+            // Show some error messages or Use another option for that purpose
+
+          });
+      }
+    ```
+
+- > Accessing GeoLocation API
+
+  - **Code for this Example**
+
+    ```
+      function getLocationCoordinates() {
+
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+
+            // Do some stuffs after getting position Coordinates (Use some GeoCoding API to get the formatted Address)
+
+          },
+          function (error) {
+
+            // Show Some Error Messages
+
+          },
+          {<- Options (If Any) ->}
+        );
+
+      }
     ```
 
 ### Helpful Links
 
-- [Background Sync Feature](https://developers.google.com/web/updates/2015/12/background-sync)
-- [Firebase Functions](https://firebase.google.com/products/functions)
-- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Media API](https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API)
+- [GeoLocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
