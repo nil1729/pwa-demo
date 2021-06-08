@@ -1,3 +1,5 @@
+<div style="text-align:center"><img src="./pwa.png" /></div>
+
 ## PWA Noob
 
 - Progressive Web Apps are web apps that use emerging web browser APIs and features along with traditional progressive enhancement strategy to bring a native app-like user experience to cross-platform web applications
@@ -18,3 +20,9 @@
 ### Acknowledgement
 
 - [Maximilian Schwarzmüller PWA Course](https://www.udemy.com/course/progressive-web-app-pwa-the-complete-guide)
+
+### Helpful Links
+
+- [PWA MDN Docs](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+- [PWA Web Dev](https://web.dev/progressive-web-apps/)
+- [PWA Lighthouse](https://web.dev/lighthouse-pwa/)
